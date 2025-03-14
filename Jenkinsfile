@@ -1,33 +1,42 @@
 pipeline {
     agent any
-
+    environment {
+        VENV_DIR = 'venv'  // Virtual environment directory
+    }
     stages {
         stage('Checkout') {
             steps {
-                // Pull the code from the repository
                 checkout scm
             }
         }
-
         stage('Install Dependencies') {
             steps {
-                // Install the required dependencies from requirements.txt
-                sh 'pip install -r requirements.txt'
+                script {
+                    // Create a virtual environment
+                    sh 'python3 -m venv $VENV_DIR'
+
+                    // Activate the virtual environment
+                    sh '. $VENV_DIR/bin/activate && pip install --upgrade pip'
+
+                    // Install dependencies from requirements.txt within the virtual environment
+                    sh '. $VENV_DIR/bin/activate && pip install -r requirements.txt'
+                }
             }
         }
-
         stage('Run Tests') {
             steps {
-                // Run the test cases using unittest
-                sh 'python -m unittest discover'
+                script {
+                    // Run tests using the virtual environment
+                    sh '. $VENV_DIR/bin/activate && pytest'
+                }
             }
         }
     }
-
     post {
         always {
-            // This will run after the pipeline finishes regardless of success or failure
             echo 'Cleaning up...'
+            // Clean up virtual environment after the job
+            sh 'rm -rf $VENV_DIR'
         }
     }
 }
