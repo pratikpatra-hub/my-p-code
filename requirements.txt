@@ -1,3 +1,4 @@
-# requirements.txt
-unittest
+pytest==7.0.1
+# other dependencies like flask, requests, etc.
+
 
