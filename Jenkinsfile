@@ -1,43 +1,41 @@
 pipeline {
     agent any
+    
     environment {
-        VENV_DIR = 'venv'  // Virtual environment directory
+        // Define the path to your Python virtual environment
+        PYTHON_VENV = "${WORKSPACE}/venv"
+        SONARQUBE_SCANNER_HOME = "/opt/sonarqube-scanner" // Update this path based on your system setup
     }
+
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                // Checkout the code from GitHub
+                git 'https://github.com/pratikpatra-hub/my-p-code.git'
             }
         }
-        stage('Install Dependencies') {
+
+        stage('Create Virtual Environment') {
             steps {
                 script {
                     // Create a virtual environment
-                    sh 'python3 -m venv $VENV_DIR'
-
-                    // Activate the virtual environment
-                    sh '. $VENV_DIR/bin/activate && pip install --upgrade pip'
-
-                    // Install dependencies from requirements.txt within the virtual environment
-                    sh '. $VENV_DIR/bin/activate && pip install -r requirements.txt'
+                    sh 'python3 -m venv ${PYTHON_VENV}'
                 }
             }
         }
+
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    // Activate virtual environment and install dependencies
+                    sh '. ${PYTHON_VENV}/bin/activate && pip install --upgrade pip'
+                    sh '. ${PYTHON_VENV}/bin/activate && pip install -r requirements.txt'
+                }
+            }
+        }
+
         stage('Run Tests') {
             steps {
                 script {
-                    // Run tests using the virtual environment
-                    sh '. $VENV_DIR/bin/activate && pytest'
-                }
-            }
-        }
-    }
-    post {
-        always {
-            echo 'Cleaning up...'
-            // Clean up virtual environment after the job
-            sh 'rm -rf $VENV_DIR'
-        }
-    }
-}
+                    // Ac
 

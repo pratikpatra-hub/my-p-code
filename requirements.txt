@@ -1,4 +1,16 @@
-pytest==7.0.1
-# other dependencies like flask, requests, etc.
+# Testing dependencies
+pytest==7.4.0                # Testing framework
+pytest-cov==4.0.0             # Plugin to generate code coverage reports
+
+# Additional dependencies for your project (example: requests, flask, etc.)
+requests==2.28.2             # If your project makes HTTP requests
+flask==2.2.3                 # If your project is a web app using Flask
+numpy==1.23.5                # If your project requires numpy (example)
+pandas==1.5.3                # If your project requires pandas (example)
+
+# Other optional tools or libraries
+# You can add libraries that your project requires, such as:
+# pylint==2.15.0             # Static code analysis tool
+# black==22.10.0             # Python code formatter
 
 
